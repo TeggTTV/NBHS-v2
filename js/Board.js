@@ -10,6 +10,7 @@ class Board {
     constructor(logic) {
         this.name = 'Unnamed Board';
         this.elements = [];
+        this.wires = [];
         if (logic != null) {
             this.type = logic.type;
         }
@@ -20,8 +21,40 @@ class Board {
     addNode(type) {
         switch (type) {
             case NodeType.Switch:
-                this.elements.push(new Switch(width / 2, height / 2, 100, 100, 'Switch', false));
+                this.elements.push(new Switch(this, width / 2, height / 2, 100, 100, 'Switch', false));
+                break;
+            case NodeType.And:
+                this.elements.push(new And(this, width / 2, height / 2, 100, 100));
+                break;
+            case NodeType.Or:
+                this.elements.push(new Or(this, width / 2, height / 2, 100, 100));
+                break;
+            default:
+                break;
         }
     }
-    update() { }
+    createWire(startNode, endNode) {
+        let wireExists = false;
+        this.wires.forEach((w) => {
+            if ((w.startNode == startNode && w.endNode == endNode) ||
+                (w.startNode == endNode && w.endNode == startNode)) {
+                wireExists = true;
+                return;
+            }
+        });
+        if (wireExists)
+            return;
+        let wire = new Wire(startNode, endNode);
+        this.wires.push(wire);
+    }
+    update() {
+        this.wires.forEach((w) => {
+            w.draw(ctx);
+            w.update();
+        });
+        this.elements.forEach((e) => {
+            e.draw(ctx);
+            e.update(mouse, this.elements, ctx, 50, canvas, this.elements);
+        });
+    }
 }

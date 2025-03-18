@@ -1,7 +1,7 @@
 "use strict";
 class Switch extends NodeElement {
-    constructor(x, y, w, h, name, powered) {
-        super(x, y, w, h, name);
+    constructor(parent, x, y, w, h, name, powered) {
+        super(parent, x, y, w, h, name);
         this.nodes = [new LogicNode(this, this.w, this.h / 2, 7, false)];
         this.powered = powered;
         this.wireStart = { x: 0, y: 0 };
@@ -16,14 +16,12 @@ class Switch extends NodeElement {
         // let count = 0;
         // if (mouse) {
         // 	// Check if the mouse is pressed over the switch
-        // 	if (
-        // 		mouse.down &&
-        // 		!this.mouseDownAndNotOver &&
-        // 		mouseOver(this.x, this.y, this.w, this.h, mouse.x, mouse.y)
-        // 	) {
-        // 		this.powered = !this.powered; // Toggle the power state
-        // 		this.mouseDownAndNotOver = true; // Prevent further toggling until mouse is released
-        // 	}
+        if (mouse.down &&
+            !this.mouseDownAndNotOver &&
+            mouseOver(this.x, this.y, this.w, this.h, mouse.x, mouse.y)) {
+            this.powered = !this.powered; // Toggle the power state
+            this.mouseDownAndNotOver = true; // Prevent further toggling until mouse is released
+        }
         // 	this/nodes.forEach((node) => {
         // 		if (
         // 			!node.mouseOver(mouse.x, mouse.y) &&
@@ -161,7 +159,7 @@ class Switch extends NodeElement {
         // 	}
         // });
         this.nodes.forEach((node) => {
-            node.update(mouse, [], ctx);
+            node.update(mouse, ctx);
             node.draw(ctx);
         });
     }

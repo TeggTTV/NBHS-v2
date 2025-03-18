@@ -7,7 +7,10 @@ let selector = document.querySelector('#boardSelector');
 const mouse = {
     x: 0,
     y: 0,
-    down: false
+    down: false,
+    left: false,
+    creatingWire: false,
+    creatingWireNode: null
 };
 function mouseOver(x, y, w, h, mx, my) {
     return mx > x && mx < x + w && my > y && my < y + h;

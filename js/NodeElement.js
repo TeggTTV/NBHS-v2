@@ -1,6 +1,6 @@
 "use strict";
 class NodeElement {
-    constructor(x, y, w, h, name) {
+    constructor(parent, x, y, w, h, name) {
         this.focused = false;
         this.dragging = false;
         this.setRel = false;
@@ -9,21 +9,12 @@ class NodeElement {
         this.draggable = true;
         this.mouseDownAndNotOver = false;
         this.nodes = [];
+        this.parent = parent;
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.name = name;
-    }
-    static cacheGrid(canvas, gridSize) {
-        if (!this.cachedGrid) {
-            this.cachedGrid = [];
-            for (let i = 0; i < canvas.width; i += gridSize) {
-                for (let j = 0; j < canvas.height; j += gridSize) {
-                    this.cachedGrid.push({ x: i, y: j });
-                }
-            }
-        }
     }
     getMouseOver(mouse) {
         return (mouse.x > this.x &&
@@ -49,6 +40,7 @@ class NodeElement {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(this.name, this.x + this.w / 2, this.y + this.h / 2);
+        ctx.textAlign = "left";
         if (this.focused) {
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 3;
@@ -67,24 +59,17 @@ class NodeElement {
             nodeElements.splice(index, 1);
     }
     update(mouse, nodeList, ctx, gridSize, canvas, nodeElements) {
-        var _a;
         if (mouse.down && !this.getMouseOver(mouse) && !this.dragging) {
             this.draggable = false;
+        }
+        if (mouse.left && this.getMouseOver(mouse)) {
+            this.remove(this.parent.elements);
         }
         if (this.dragging && this.draggable && mouse.down && this.focused) {
             this.drag(mouse.x, mouse.y);
             // ctx.beginPath();
             // ctx.strokeStyle = NodeElement.HIGHLIGHT_COLOR;
             // ctx.lineWidth = 3;
-            NodeElement.cacheGrid(canvas, gridSize);
-            (_a = NodeElement.cachedGrid) === null || _a === void 0 ? void 0 : _a.forEach(({ x, y }) => {
-                if (this.x >= x &&
-                    this.x < x + gridSize &&
-                    this.y >= y &&
-                    this.y < y + gridSize) {
-                    ctx.rect(x, y, gridSize, gridSize);
-                }
-            });
             // ctx.stroke();
             // ctx.closePath();
         }

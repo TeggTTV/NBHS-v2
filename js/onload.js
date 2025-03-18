@@ -1,11 +1,21 @@
 "use strict";
-document.addEventListener("DOMContentLoaded", init);
-canvas.addEventListener("mousemove", updateMousePosition);
-canvas.addEventListener('mousedown', () => {
-    mouse.down = true;
+document.addEventListener('DOMContentLoaded', init);
+canvas.addEventListener('mousemove', updateMousePosition);
+canvas.addEventListener('mousedown', (e) => {
+    if (e.button == 0) {
+        mouse.down = true;
+    }
+    else if (e.button == 2) {
+        mouse.left = true;
+    }
 });
-canvas.addEventListener('mouseup', () => {
-    mouse.down = false;
+canvas.addEventListener('mouseup', (e) => {
+    if (e.button == 0) {
+        mouse.down = false;
+    }
+    else if (e.button == 2) {
+        mouse.left = false;
+    }
 });
 function updateMousePosition(ev) {
     mouse.x = ev.clientX;

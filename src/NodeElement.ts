@@ -11,30 +11,20 @@ class NodeElement {
 	relativeY: number = 0;
 	draggable: boolean = true;
 	mouseDownAndNotOver: boolean = false;
+	parent: Board;
+
 	nodes: LogicNode[] = [];
+
 	private static readonly HIGHLIGHT_COLOR = 'yellow';
 	private static cachedGrid: { x: number; y: number }[] | null = null;
 
-	constructor(x: number, y: number, w: number, h: number, name: string) {
+	constructor(parent: Board, x: number, y: number, w: number, h: number, name: string) {
+		this.parent = parent;
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		this.name = name;
-	}
-
-	private static cacheGrid(
-		canvas: HTMLCanvasElement,
-		gridSize: number
-	): void {
-		if (!this.cachedGrid) {
-			this.cachedGrid = [];
-			for (let i = 0; i < canvas.width; i += gridSize) {
-				for (let j = 0; j < canvas.height; j += gridSize) {
-					this.cachedGrid.push({ x: i, y: j });
-				}
-			}
-		}
 	}
 
 	getMouseOver(mouse: { x: number; y: number }): boolean {
@@ -68,7 +58,7 @@ class NodeElement {
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillText(this.name, this.x + this.w / 2, this.y + this.h / 2);
-
+		ctx.textAlign = "left";
 		if (this.focused) {
 			ctx.strokeStyle = '#fff';
 			ctx.lineWidth = 3;
@@ -88,7 +78,7 @@ class NodeElement {
 	}
 
 	update(
-		mouse: { x: number; y: number; down: boolean },
+		mouse: Mouse,
 		nodeList: NodeElement[],
 		ctx: CanvasRenderingContext2D,
 		gridSize: number,
@@ -98,23 +88,15 @@ class NodeElement {
 		if (mouse.down && !this.getMouseOver(mouse) && !this.dragging) {
 			this.draggable = false;
 		}
+		if(mouse.left && this.getMouseOver(mouse)) {
+			this.remove(this.parent.elements);
+		}
 
 		if (this.dragging && this.draggable && mouse.down && this.focused) {
 			this.drag(mouse.x, mouse.y);
 			// ctx.beginPath();
 			// ctx.strokeStyle = NodeElement.HIGHLIGHT_COLOR;
 			// ctx.lineWidth = 3;
-			NodeElement.cacheGrid(canvas, gridSize);
-			NodeElement.cachedGrid?.forEach(({ x, y }) => {
-				if (
-					this.x >= x &&
-					this.x < x + gridSize &&
-					this.y >= y &&
-					this.y < y + gridSize
-				) {
-					ctx.rect(x, y, gridSize, gridSize);
-				}
-			});
                 // ctx.stroke();
                 // ctx.closePath();
 		}

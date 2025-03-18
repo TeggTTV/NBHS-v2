@@ -1,5 +1,7 @@
 "use strict";
 class LogicNode {
+    // hasWire: boolean;
+    // connectedWire: any | null;
     constructor(parent, x, y, r, powered) {
         this.parent = parent;
         this.oX = x;
@@ -9,10 +11,10 @@ class LogicNode {
         this.r = r;
         this.powered = powered;
         this.mouseDown = false;
-        this.dragging = false;
+        // this.dragging = false;
         this.focused = false;
-        this.hasWire = false;
-        this.connectedWire = null;
+        // this.hasWire = false;
+        // this.connectedWire = null;
         if (this.parent.nodes)
             if (this.parent.nodes.length === 0) {
                 this.parent.nodes.push(this);
@@ -30,11 +32,35 @@ class LogicNode {
                 });
             }
     }
-    update(mouse, nodes, ctx) {
+    update(mouse, ctx) {
         this.x = this.parent.x + this.oX;
         this.y = this.parent.y + this.oY;
         if (mouseOver(this.x - this.r, this.y - this.r, this.r * 2, this.r * 2, mouse.x, mouse.y)) {
-            // if(mouse.down)
+            if (mouse.down) {
+                if (mouse.creatingWire && mouse.creatingWireNode != this) {
+                    for (let n of this.parent.nodes) {
+                        if (mouse.creatingWireNode == n) {
+                            return;
+                        }
+                    }
+                    // create a wire
+                    this.parent.parent.createWire(mouse.creatingWireNode, this);
+                    mouse.creatingWire = false;
+                    mouse.creatingWireNode = null;
+                    mouse.down = false;
+                }
+                else if (mouse.creatingWire &&
+                    mouse.creatingWireNode == this) {
+                    mouse.creatingWire = false;
+                    mouse.creatingWireNode = null;
+                    mouse.down = false;
+                }
+                else {
+                    mouse.down = false;
+                    mouse.creatingWire = true;
+                    mouse.creatingWireNode = this;
+                }
+            }
         }
         // let count = 0;
         // if (wires.length === 0 && this.connectedWire !== undefined) {
@@ -63,28 +89,14 @@ class LogicNode {
         // 		this.powered = this.parent.powered;
         // 	}
         // }
-    }
-    evaluateLogicGate() {
-        // if (this.parent instanceof And && this.parent.nodes[2] === this) {
-        // 	if (this.parent.nodes[0].powered && this.parent.nodes[1].powered) {
-        // 		return;
-        // 	}
-        // }
-        // if (this.parent instanceof Or && this.parent.nodes[2] === this) {
-        // 	if (this.parent.nodes[0].powered || this.parent.nodes[1].powered) {
-        // 		return;
-        // 	}
-        // }
-        // if (this.parent instanceof XOr && this.parent.nodes[2] === this) {
-        // 	if (this.parent.nodes[0].powered && this.parent.nodes[1].powered) {
-        // 		this.powered = false;
-        // 		return;
-        // 	}
-        // 	if (this.parent.nodes[0].powered || this.parent.nodes[1].powered) {
-        // 		return;
-        // 	}
-        // }
-        this.powered = false;
+        if (this.parent instanceof Switch) {
+            if (this.parent.powered) {
+                this.powered = true;
+            }
+            else {
+                this.powered = false;
+            }
+        }
     }
     draw(ctx) {
         if (this.parent) {
@@ -129,7 +141,17 @@ class LogicNode {
     // 	return 'red';
     // }
     getFillColor() {
-        return 'green';
+        if (mouse.creatingWire && mouse.creatingWireNode == this) {
+            return 'yellow';
+        }
+        if (this.powered)
+            return 'green';
+        if (this.parent instanceof Switch) {
+            if (this.parent.powered) {
+                return 'green';
+            }
+        }
+        return 'red';
     }
     mouseOver(x, y) {
         return (x > this.x - this.r &&
