@@ -1,6 +1,5 @@
 "use strict";
 class LogicNode {
-    // hasWire: boolean;
     // connectedWire: any | null;
     constructor(parent, x, y, r, powered) {
         this.parent = parent;
@@ -13,7 +12,7 @@ class LogicNode {
         this.mouseDown = false;
         // this.dragging = false;
         this.focused = false;
-        // this.hasWire = false;
+        this.hasWire = false;
         // this.connectedWire = null;
         if (this.parent.nodes)
             if (this.parent.nodes.length === 0) {
@@ -45,6 +44,8 @@ class LogicNode {
                     }
                     // create a wire
                     this.parent.parent.createWire(mouse.creatingWireNode, this);
+                    mouse.creatingWireNode.hasWire = true;
+                    this.hasWire = true;
                     mouse.creatingWire = false;
                     mouse.creatingWireNode = null;
                     mouse.down = false;
@@ -62,33 +63,6 @@ class LogicNode {
                 }
             }
         }
-        // let count = 0;
-        // if (wires.length === 0 && this.connectedWire !== undefined) {
-        // 	this.connectedWire = null;
-        // 	this.hasWire = false;
-        // }
-        // const wireSet = new Set(wires);
-        // if (!wireSet.has(this.connectedWire)) {
-        // 	this.connectedWire = null;
-        // 	this.hasWire = false;
-        // }
-        // Logic for updating the power state of the node
-        // if (this.connectedWire) {
-        // 	if (this.connectedWire.startParent !== this) {
-        // 		this.powered = this.connectedWire.startParent.powered;
-        // 	} else if (
-        // 		this.connectedWire.startParent === this &&
-        // 		this.parent instanceof Switch
-        // 	) {
-        // 		this.connectedWire.endParent.powered = this.parent.powered;
-        // 	}
-        // } else {
-        // 	if (!(this.parent instanceof Switch)) {
-        // 		this.evaluateLogicGate();
-        // 	} else {
-        // 		this.powered = this.parent.powered;
-        // 	}
-        // }
         if (this.parent instanceof Switch) {
             if (this.parent.powered) {
                 this.powered = true;
@@ -96,6 +70,9 @@ class LogicNode {
             else {
                 this.powered = false;
             }
+        }
+        if (!this.hasWire && this.x == this.parent.x) {
+            this.powered = false;
         }
     }
     draw(ctx) {

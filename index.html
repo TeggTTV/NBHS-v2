@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Node Based Hardware Simulation</title>
-    <style>
-      html,
-      body {
-        margin: 0;
-        overflow: hidden;
-      }
-    </style>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <!-- ui div -->
-    <div id="ui" class="ui">
-      <!-- <button id="zoomIn" class=" "></button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Node Based Hardware Simulation</title>
+        <style>
+            html,
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+        </style>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body oncontextmenu="return false;">
+        <!-- ui div -->
+        <div id="ui" class="ui">
+            <!-- <button id="zoomIn" class=" "></button>
     <button id="zoomOut" class="  "></button>
     <button id="reset" class="  "></button> -->
-      <!-- <button class="play" id="play">Play</button> -->
+            <!-- <button class="play" id="play">Play</button> -->
 
-      <!-- create nodeelement button -->
-      <!-- create AND -->
-      <!-- <button class="create" id="createAND">AND</button>
+            <!-- create nodeelement button -->
+            <!-- create AND -->
+            <!-- <button class="create" id="createAND">AND</button>
       <button class="create" id="createOR">OR</button>
       <button class="create" id="createNOT">NOT</button>
       <button class="create" id="createNAND">NAND</button>
@@ -34,9 +34,9 @@
       <button class="create" id="createLED">LED</button>
       <button class="create" id="createSWITCH">SWITCH</button>
       <button class="create" id="createBUTTON">BUTTON</button> -->
-    </div>
-    <div class="boardSelector" id="boardSelector"></div>
-<!-- 
+        </div>
+        <div class="boardSelector" id="boardSelector"></div>
+        <!-- 
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-app.js";
@@ -61,20 +61,20 @@
       const analytics = getAnalytics(app);
     </script> -->
 
-    <canvas id="canvas"></canvas>
-    <script src="js/Globals.js"></script>
+        <canvas id="canvas"></canvas>
+        <script src="js/Globals.js"></script>
 
-    <!-- <script src="js/Wire.js"></script>-->
-    <script src="js/LogicNode.js"></script>
-    <script src="js/NodeElement.js"></script> 
+        <!-- <script src="js/Wire.js"></script>-->
+        <script src="js/LogicNode.js"></script>
+        <script src="js/NodeElement.js"></script>
 
-    <script src="js/Switch.js"></script>
-    <script src="js/Boards/And.js"></script>
-    <script src="js/Boards/Or.js"></script>
+        <script src="js/Switch.js"></script>
+        <script src="js/Boards/And.js"></script>
+        <script src="js/Boards/Not.js"></script>
 
-    <script src="js/Wire.js"></script>
+        <script src="js/Wire.js"></script>
 
-    <!-- <script src="js/NodeTypes/Switch.js"></script>
+        <!-- <script src="js/NodeTypes/Switch.js"></script>
     <script src="js/NodeTypes/Light.js"></script>
     <script src="js/NodeTypes/LightRGBA.js"></script>
     <script src="js/NodeTypes/AND.js"></script>
@@ -86,12 +86,12 @@
     <script src="js/NodeTypes/XNOR.js"></script>
     <script src="js/NodeTypes/Button.js"></script> -->
 
-    <script src="js/Board.js"></script>
-    <script src="js/BoardSelector.js"></script>
+        <script src="js/Board.js"></script>
+        <script src="js/BoardSelector.js"></script>
 
-    <script src="js/main.js"></script>
-    <script src="js/onload.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/onload.js"></script>
 
-    <!-- <script src="js/Programs/4bitdisplay.js"></script> -->
-  </body>
+        <!-- <script src="js/Programs/4bitdisplay.js"></script> -->
+    </body>
 </html>

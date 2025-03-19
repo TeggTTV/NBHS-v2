@@ -3,7 +3,7 @@ var NodeType;
 (function (NodeType) {
     NodeType[NodeType["Switch"] = 0] = "Switch";
     NodeType[NodeType["And"] = 1] = "And";
-    NodeType[NodeType["Or"] = 2] = "Or";
+    NodeType[NodeType["Not"] = 2] = "Not";
     NodeType[NodeType["NewType"] = 3] = "NewType";
 })(NodeType || (NodeType = {}));
 class Board {
@@ -26,8 +26,8 @@ class Board {
             case NodeType.And:
                 this.elements.push(new And(this, width / 2, height / 2, 100, 100));
                 break;
-            case NodeType.Or:
-                this.elements.push(new Or(this, width / 2, height / 2, 100, 100));
+            case NodeType.Not:
+                this.elements.push(new Not(this, width / 2, height / 2, 100, 100));
                 break;
             default:
                 break;
@@ -54,7 +54,7 @@ class Board {
         });
         this.elements.forEach((e) => {
             e.draw(ctx);
-            e.update(mouse, this.elements, ctx, 50, canvas, this.elements);
+            e.update(mouse, this.elements);
         });
     }
 }

@@ -1,8 +1,7 @@
 enum NodeType {
 	Switch,
 	And,
-	Or,
-
+	Not,
 	NewType,
 }
 
@@ -18,7 +17,7 @@ class Board {
 	public name: string = 'Unnamed Board';
 	public type: NodeType;
 	public elements: NodeElement[] = [];
-	private wires: Wire[] = [];
+	public wires: Wire[] = [];
 
 	constructor(logic: Logic | null) {
 		if (logic != null) {
@@ -49,9 +48,9 @@ class Board {
 				);
 				break;
 
-			case NodeType.Or:
+			case NodeType.Not:
 				this.elements.push(
-					new Or(this, width / 2, height / 2, 100, 100)
+					new Not(this, width / 2, height / 2, 100, 100)
 				);
 				break;
 			default:
@@ -83,7 +82,7 @@ class Board {
 		});
 		this.elements.forEach((e) => {
 			e.draw(ctx);
-			e.update(mouse, this.elements, ctx, 50, canvas, this.elements);
+			e.update(mouse, this.elements);
 		});
 	}
 }

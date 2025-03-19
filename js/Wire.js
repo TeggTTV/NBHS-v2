@@ -1,7 +1,7 @@
 "use strict";
 class Wire {
     constructor(startNode, endNode) {
-        this.color = 'yellow';
+        this.color = "yellow";
         this.startNode = startNode;
         this.endNode = endNode;
     }
@@ -30,41 +30,29 @@ class Wire {
             start.powered = false;
         }
         let e = this.isMouseOnWire(mouse, this);
-        console.log(e);
+        if (e < 4) {
+            this.color = 'red';
+            if (mouse.left) {
+                this.startNode.parent.parent.wires = this.startNode.parent.parent.wires.filter((w) => w != this);
+                this.startNode.hasWire = false;
+                this.endNode.hasWire = false;
+            }
+        }
     }
     isMouseOnWire(mouse, wire) {
-        const { x: x1, y: y1 } = wire.startNode;
-        const { x: x2, y: y2 } = wire.endNode;
-        const { x: mx, y: my, down } = mouse;
-        if (!down)
-            return false; // Only detect when mouse is clicked
-        // Line segment distance formula
-        const A = my - y1;
-        const B = x1 - mx;
-        const C = x2 - x1;
-        const D = y2 - y1;
-        // Compute the dot product to find projection
-        const dot = A * C + B * D;
-        const lenSq = C * C + D * D;
-        const param = lenSq !== 0 ? dot / lenSq : -1;
-        // Find the closest point on the wire
-        let nearestX, nearestY;
-        if (param < 0) {
-            nearestX = x1;
-            nearestY = y1;
-        }
-        else if (param > 1) {
-            nearestX = x2;
-            nearestY = y2;
-        }
-        else {
-            nearestX = x1 + param * C;
-            nearestY = y1 + param * D;
-        }
-        // Compute distance from mouse to closest point
-        const dx = mx - nearestX;
-        const dy = my - nearestY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance <= 2; // Wire is 4 pixls thick, so we check within 2 pixels
+        const dx = this.endNode.x - this.startNode.x;
+        const dy = this.endNode.y - this.startNode.y;
+        // Handle zero-length line segment
+        if (dx === 0 && dy === 0)
+            return Math.sqrt(Math.pow(mouse.x - this.startNode.x, 2) +
+                Math.pow(mouse.y - this.startNode.y, 2));
+        const t = ((mouse.x - this.startNode.x) * dx + (mouse.y - this.startNode.y) * dy) /
+            (dx * dx + dy * dy);
+        // Clamp t to [0, 1] interval
+        const tClamped = Math.max(0, Math.min(1, t));
+        const nearestX = this.startNode.x + tClamped * dx;
+        const nearestY = this.startNode.y + tClamped * dy;
+        return Math.sqrt(Math.pow(mouse.x - nearestX, 2) + Math.pow(mouse.y - nearestY, 2));
     }
+    ;
 }

@@ -17,21 +17,21 @@ const AndBoardLogic: Logic = {
 		} else return false;
 	},
 };
-const OrBoardLogic: Logic = {
-	inputs: 2,
+const NotBoardLogic: Logic = {
+	inputs: 1,
 	outputs: 1,
-    type: NodeType.Or,
-	logic: (node1: boolean, node2: boolean) => {
-		if (node1 || node2) {
-			return true;
-		} else return false;
+    type: NodeType.Not,
+	logic: (node1: boolean) => {
+		if (node1) {
+			return false;
+		} else return true;
 	},
 };
 class BoardSelector {
 	public boards: Board[] = [
         new Board(SwitchBoardLogic),
 		new Board(AndBoardLogic),
-		new Board(OrBoardLogic),
+		new Board(NotBoardLogic),
 	];
     private selectedBoard: Board;
 	constructor(selectedBoard: Board) {

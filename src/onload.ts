@@ -1,16 +1,18 @@
 document.addEventListener('DOMContentLoaded', init);
 canvas.addEventListener('mousemove', updateMousePosition);
-canvas.addEventListener('mousedown', (e) => {
+document.addEventListener('mousedown', (e) => {
 	if (e.button == 0) {
 		mouse.down = true;
 	} else if (e.button == 2) {
+		e.preventDefault();
 		mouse.left = true;
 	}
 });
-canvas.addEventListener('mouseup', (e) => {
+document.addEventListener('mouseup', (e) => {
 	if (e.button == 0) {
 		mouse.down = false;
 	} else if (e.button == 2) {
+		e.preventDefault();
 		mouse.left = false;
 	}
 });

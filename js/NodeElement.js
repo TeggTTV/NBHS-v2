@@ -33,37 +33,51 @@ class NodeElement {
         this.y = y - this.relativeY;
     }
     draw(ctx) {
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = "#fff";
         ctx.fillRect(this.x, this.y, this.w, this.h);
-        ctx.font = '12px Arial';
-        ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillText(this.name, this.x + this.w / 2, this.y + this.h / 2);
         ctx.textAlign = "left";
         if (this.focused) {
-            ctx.strokeStyle = '#fff';
+            ctx.strokeStyle = "#fff";
             ctx.lineWidth = 3;
             ctx.strokeRect(this.x, this.y, this.w, this.h);
         }
     }
-    remove(nodeElements) {
+    remove() {
+        let wires = [];
+        this.parent.wires.forEach((wire) => {
+            for (let node of this.nodes) {
+                if (wire.startNode == node || wire.endNode == node) {
+                    wires.push(wire);
+                }
+            }
+        });
+        wires.forEach((wire) => {
+            wire.startNode.hasWire = false;
+            wire.endNode.hasWire = false;
+            this.parent.wires = this.parent.wires.filter((w) => w !== wire);
+        });
         this.nodes.forEach((node) => {
+            // Remove any wires connected to this node
             const nodeIndex = this.nodes.indexOf(node);
             if (nodeIndex !== -1) {
                 this.nodes.splice(nodeIndex, 1);
             }
         });
-        const index = nodeElements.indexOf(this);
+        const index = this.parent.elements.indexOf(this);
         if (index !== -1)
-            nodeElements.splice(index, 1);
+            this.parent.elements.splice(index, 1);
     }
-    update(mouse, nodeList, ctx, gridSize, canvas, nodeElements) {
+    update(mouse, nodeElements) {
         if (mouse.down && !this.getMouseOver(mouse) && !this.dragging) {
             this.draggable = false;
         }
         if (mouse.left && this.getMouseOver(mouse)) {
-            this.remove(this.parent.elements);
+            this.remove();
         }
         if (this.dragging && this.draggable && mouse.down && this.focused) {
             this.drag(mouse.x, mouse.y);
@@ -78,7 +92,7 @@ class NodeElement {
                 this.relativeX = mouse.x - this.x;
                 this.relativeY = mouse.y - this.y;
             }
-            nodeList.forEach((node) => {
+            nodeElements.forEach((node) => {
                 if (node !== this) {
                     node.focused = false;
                 }
@@ -110,5 +124,5 @@ class NodeElement {
         this.updateNodes();
     }
 }
-NodeElement.HIGHLIGHT_COLOR = 'yellow';
+NodeElement.HIGHLIGHT_COLOR = "yellow";
 NodeElement.cachedGrid = null;

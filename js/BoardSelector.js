@@ -19,16 +19,16 @@ const AndBoardLogic = {
             return false;
     },
 };
-const OrBoardLogic = {
-    inputs: 2,
+const NotBoardLogic = {
+    inputs: 1,
     outputs: 1,
-    type: NodeType.Or,
-    logic: (node1, node2) => {
-        if (node1 || node2) {
-            return true;
+    type: NodeType.Not,
+    logic: (node1) => {
+        if (node1) {
+            return false;
         }
         else
-            return false;
+            return true;
     },
 };
 class BoardSelector {
@@ -36,7 +36,7 @@ class BoardSelector {
         this.boards = [
             new Board(SwitchBoardLogic),
             new Board(AndBoardLogic),
-            new Board(OrBoardLogic),
+            new Board(NotBoardLogic),
         ];
         this.selectedBoard = selectedBoard;
     }
