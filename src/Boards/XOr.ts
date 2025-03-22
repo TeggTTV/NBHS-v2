@@ -1,4 +1,4 @@
-class And extends NodeElement {
+class XOr extends NodeElement {
 	focused: boolean = false;
 	dragging: boolean = false;
 	setRel: boolean = false;
@@ -21,8 +21,11 @@ class And extends NodeElement {
 			node.draw(ctx);
 		});
 
-		if (this.nodes[0].powered && this.nodes[1].powered) {
-			this.nodes[2].powered = true;
-		} else this.nodes[2].powered = false;
+		// Update the logic of the XOR gate based on the input nodes
+		const input1 = this.nodes[0].powered;
+		const input2 = this.nodes[1].powered;
+
+		// XOR logic: output is true if inputs are different
+		this.nodes[2].powered = input1 !== input2;
 	}
 }

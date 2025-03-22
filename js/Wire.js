@@ -38,6 +38,9 @@ class Wire {
                 this.endNode.hasWire = false;
             }
         }
+        else {
+            this.color = 'yellow';
+        }
     }
     isMouseOnWire(mouse, wire) {
         const dx = this.endNode.x - this.startNode.x;

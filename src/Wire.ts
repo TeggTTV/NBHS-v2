@@ -45,7 +45,9 @@ class Wire {
 				this.startNode.hasWire = false;
 				this.endNode.hasWire = false;
 			}
-		}
+		} else {
+            this.color = 'yellow';
+        }
 	}
     isMouseOnWire(mouse: Mouse, wire: Wire) {
         const dx = this.endNode.x - this.startNode.x;

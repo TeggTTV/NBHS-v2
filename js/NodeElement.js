@@ -1,6 +1,6 @@
 "use strict";
 class NodeElement {
-    constructor(parent, x, y, w, h, name) {
+    constructor(parent, x, y, w, h, logic) {
         this.focused = false;
         this.dragging = false;
         this.setRel = false;
@@ -14,7 +14,7 @@ class NodeElement {
         this.y = y;
         this.w = w;
         this.h = h;
-        this.name = name;
+        this.logic = logic;
     }
     getMouseOver(mouse) {
         return (mouse.x > this.x &&
@@ -22,7 +22,24 @@ class NodeElement {
             mouse.y > this.y &&
             mouse.y < this.y + this.h);
     }
-    updateNodes() { }
+    updateNodes() {
+        // If the logic has inputs and outputs, apply the logic
+        if (this.logic.inputs > 0 && this.logic.outputs > 0) {
+            const inputStates = this.nodes
+                .slice(0, this.logic.inputs)
+                .map((node) => node.powered);
+            // Apply the logic function
+            const outputStates = this.logic.logic(inputStates);
+            // Update the output nodes based on the logic result
+            this.nodes
+                .slice(this.logic.inputs, this.logic.inputs + this.logic.outputs)
+                .forEach((node, index) => {
+                node.powered = Array.isArray(outputStates)
+                    ? outputStates[index]
+                    : outputStates;
+            });
+        }
+    }
     drawNodes(ctx) {
         this.nodes.forEach((node) => {
             node.draw(ctx);
@@ -39,7 +56,7 @@ class NodeElement {
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(this.name, this.x + this.w / 2, this.y + this.h / 2);
+        ctx.fillText(this.logic.name, this.x + this.w / 2, this.y + this.h / 2);
         ctx.textAlign = "left";
         if (this.focused) {
             ctx.strokeStyle = "#fff";

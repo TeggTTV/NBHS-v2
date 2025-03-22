@@ -7,8 +7,8 @@ class Not extends NodeElement {
 	draggable: boolean = true;
 	mouseDownAndNotOver: boolean = false;
 	nodes: LogicNode[] = [];
-	constructor(parent: Board, x: number, y: number, w: number, h: number) {
-		super(parent, x, y, w, h, 'Not');
+	constructor(parent: Board, x: number, y: number, w: number, h: number, logic: Logic) {
+		super(parent, x, y, w, h, logic);
 		this.nodes = [
 			new LogicNode(this, 0, this.h / 2, 7, false),
 			new LogicNode(this, this.w, this.h / 2, 7, false),

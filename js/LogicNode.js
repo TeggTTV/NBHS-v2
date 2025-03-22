@@ -44,8 +44,6 @@ class LogicNode {
                     }
                     // create a wire
                     this.parent.parent.createWire(mouse.creatingWireNode, this);
-                    mouse.creatingWireNode.hasWire = true;
-                    this.hasWire = true;
                     mouse.creatingWire = false;
                     mouse.creatingWireNode = null;
                     mouse.down = false;

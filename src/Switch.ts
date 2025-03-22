@@ -16,10 +16,10 @@ class Switch extends NodeElement {
 		y: number,
 		w: number,
 		h: number,
-		name: string,
+		logic: Logic,
 		powered: boolean
 	) {
-		super(parent, x, y, w, h, name);
+		super(parent, x, y, w, h, logic);
 		this.nodes = [new LogicNode(this, this.w, this.h / 2, 7, false)];
 		this.powered = powered;
 		this.wireStart = { x: 0, y: 0 };

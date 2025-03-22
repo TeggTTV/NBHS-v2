@@ -1,7 +1,7 @@
 "use strict";
 class Switch extends NodeElement {
-    constructor(parent, x, y, w, h, name, powered) {
-        super(parent, x, y, w, h, name);
+    constructor(parent, x, y, w, h, logic, powered) {
+        super(parent, x, y, w, h, logic);
         this.nodes = [new LogicNode(this, this.w, this.h / 2, 7, false)];
         this.powered = powered;
         this.wireStart = { x: 0, y: 0 };
