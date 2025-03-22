@@ -31,7 +31,7 @@ function mouseOver(
 	mx: number,
 	my: number
 ) {
-	return mx > x && mx < x + w && my > y && my > y + h;
+	return mx > x && mx < x + w && my > y && my < y + h;
 }
 
 // interface SmallNode {
@@ -115,7 +115,12 @@ function saveCustomBoard(name: string) {
 			// Simulate the custom board logic without recursion
 			let outputs: boolean[] = [];
 			board.elements.forEach((element) => {
-				if (!(element instanceof NodeElement && element.logic.name === name)) {
+				if (
+					!(
+						element instanceof NodeElement &&
+						element.logic.name === name
+					)
+				) {
 					element.updateNodes();
 				}
 			});
@@ -152,6 +157,7 @@ function saveCustomBoard(name: string) {
 	// Clear the current board
 	board.elements = [];
 	board.wires = [];
-	console.log(`Custom board "${name}" saved, added to the selector, and board cleared.`);
+	console.log(
+		`Custom board "${name}" saved, added to the selector, and board cleared.`
+	);
 }
-

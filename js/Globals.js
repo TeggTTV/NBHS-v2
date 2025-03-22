@@ -13,7 +13,7 @@ const mouse = {
     creatingWireNode: null,
 };
 function mouseOver(x, y, w, h, mx, my) {
-    return mx > x && mx < x + w && my > y && my > y + h;
+    return mx > x && mx < x + w && my > y && my < y + h;
 }
 // interface SmallNode {
 // 	parent
@@ -81,7 +81,8 @@ function saveCustomBoard(name) {
             // Simulate the custom board logic without recursion
             let outputs = [];
             board.elements.forEach((element) => {
-                if (!(element instanceof NodeElement && element.logic.name === name)) {
+                if (!(element instanceof NodeElement &&
+                    element.logic.name === name)) {
                     element.updateNodes();
                 }
             });

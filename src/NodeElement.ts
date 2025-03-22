@@ -45,23 +45,23 @@ class NodeElement {
 
     updateNodes(): void {
         // If the logic has inputs and outputs, apply the logic
-        if (this.logic.inputs > 0 && this.logic.outputs > 0) {
-            const inputStates = this.nodes
-                .slice(0, this.logic.inputs)
-                .map((node) => node.powered);
+        // if (this.logic.inputs > 0 && this.logic.outputs > 0) {
+        //     const inputStates = this.nodes
+        //         .slice(0, this.logic.inputs)
+        //         .map((node) => node.powered);
 
-            // Apply the logic function
-            const outputStates = this.logic.logic(inputStates);
+        //     // Apply the logic function
+        //     const outputStates = this.logic.logic(inputStates);
 
-            // Update the output nodes based on the logic result
-            this.nodes
-                .slice(this.logic.inputs, this.logic.inputs + this.logic.outputs)
-                .forEach((node, index) => {
-                    node.powered = Array.isArray(outputStates)
-                        ? outputStates[index]
-                        : outputStates;
-                });
-        }
+        //     // Update the output nodes based on the logic result
+        //     this.nodes
+        //         .slice(this.logic.inputs, this.logic.inputs + this.logic.outputs)
+        //         .forEach((node, index) => {
+        //             node.powered = Array.isArray(outputStates)
+        //                 ? outputStates[index]
+        //                 : outputStates;
+        //         });
+        // }
     }
 
     drawNodes(ctx: CanvasRenderingContext2D): void {

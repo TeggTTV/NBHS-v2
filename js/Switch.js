@@ -19,6 +19,7 @@ class Switch extends NodeElement {
         if (mouse.down &&
             !this.mouseDownAndNotOver &&
             mouseOver(this.x, this.y, this.w, this.h, mouse.x, mouse.y)) {
+            this.nodes[0].x += 10;
             this.powered = !this.powered; // Toggle the power state
             this.mouseDownAndNotOver = true; // Prevent further toggling until mouse is released
         }
