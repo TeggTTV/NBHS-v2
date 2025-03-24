@@ -1,7 +1,7 @@
 "use strict";
 class Or extends NodeElement {
-    constructor(parent, x, y, w, h) {
-        super(parent, x, y, w, h, 'Or');
+    constructor(parent, name, x, y, w, h) {
+        super(parent, name, x, y, w, h);
         this.focused = false;
         this.dragging = false;
         this.setRel = false;
@@ -19,12 +19,8 @@ class Or extends NodeElement {
     updateNodes() {
         this.nodes.forEach((node) => {
             node.update(mouse, ctx);
-            node.draw(ctx);
         });
-        if (this.nodes[0].powered || this.nodes[1].powered) {
-            this.nodes[2].powered = true;
-        }
-        else
-            this.nodes[2].powered = false;
+        // OR logic: output is true if at least one input is true
+        this.nodes[2].powered = this.nodes[0].powered || this.nodes[1].powered;
     }
 }

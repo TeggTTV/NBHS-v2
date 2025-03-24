@@ -1,5 +1,5 @@
 "use strict";
-class And extends NodeElement {
+class NOr extends NodeElement {
     constructor(parent, name, x, y, w, h) {
         super(parent, name, x, y, w, h);
         this.focused = false;
@@ -20,10 +20,7 @@ class And extends NodeElement {
         this.nodes.forEach((node) => {
             node.update(mouse, ctx);
         });
-        if (this.nodes[0].powered && this.nodes[1].powered) {
-            this.nodes[2].powered = true;
-        }
-        else
-            this.nodes[2].powered = false;
+        // NOR logic: output is true if NOT (either input is true)
+        this.nodes[2].powered = !(this.nodes[0].powered || this.nodes[1].powered);
     }
 }

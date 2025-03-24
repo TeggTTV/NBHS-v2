@@ -1,4 +1,4 @@
-class And extends NodeElement {
+class NOr extends NodeElement {
     focused: boolean = false;
     dragging: boolean = false;
     setRel: boolean = false;
@@ -7,14 +7,7 @@ class And extends NodeElement {
     draggable: boolean = true;
     mouseDownAndNotOver: boolean = false;
     nodes: LogicNode[] = [];
-    constructor(
-        parent: Board,
-        name: string,
-        x: number,
-        y: number,
-        w: number,
-        h: number
-    ) {
+    constructor(parent: Board, name: string, x: number, y: number, w: number, h: number) {
         super(parent, name, x, y, w, h);
         this.nodes = [
             new LogicNode(this, 0, this.h / 2 - this.h / 4, 7, false),
@@ -27,8 +20,7 @@ class And extends NodeElement {
             node.update(mouse, ctx);
         });
 
-        if (this.nodes[0].powered && this.nodes[1].powered) {
-            this.nodes[2].powered = true;
-        } else this.nodes[2].powered = false;
+        // NOR logic: output is true if NOT (either input is true)
+        this.nodes[2].powered = !(this.nodes[0].powered || this.nodes[1].powered);
     }
 }

@@ -23,3 +23,10 @@ function updateMousePosition(ev) {
     mouse.x = ev.clientX;
     mouse.y = ev.clientY;
 }
+window.onresize = () => {
+    console.log('Resizing');
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+};

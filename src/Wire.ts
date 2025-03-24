@@ -17,7 +17,7 @@ class Wire {
 
         ctx.stroke();
     }
-    update() {
+    update(hidden?: boolean) {
         let start = this.startNode;
         let end = this.endNode;
 
@@ -34,19 +34,20 @@ class Wire {
         } else if (!end.powered && end.x == end.parent.x + end.parent.w) {
             start.powered = false;
         }
-
-        let e = this.isMouseOnWire(mouse, this);
-		if(e < 4) {
-			this.color = 'red';
-			if(mouse.left) {
-				this.startNode.parent.parent.wires = this.startNode.parent.parent.wires.filter(	
-					(w) => w != this
-				);
-				this.startNode.hasWire = false;
-				this.endNode.hasWire = false;
-			}
-		} else {
-            this.color = 'yellow';
+        if(!hidden) {
+            let e = this.isMouseOnWire(mouse, this);
+            if(e < 4) {
+                this.color = 'red';
+                if(mouse.left) {
+                    this.startNode.parent.parent.wires = this.startNode.parent.parent.wires.filter(	
+                        (w) => w != this
+                    );
+                    this.startNode.hasWire = false;
+                    this.endNode.hasWire = false;
+                }
+            } else {
+                this.color = 'yellow';
+            }
         }
 	}
     isMouseOnWire(mouse: Mouse, wire: Wire) {

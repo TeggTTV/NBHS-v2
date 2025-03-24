@@ -1,7 +1,7 @@
 "use strict";
 class Not extends NodeElement {
-    constructor(parent, x, y, w, h, logic) {
-        super(parent, x, y, w, h, logic);
+    constructor(parent, name, x, y, w, h) {
+        super(parent, name, x, y, w, h);
         this.focused = false;
         this.dragging = false;
         this.setRel = false;
@@ -18,7 +18,6 @@ class Not extends NodeElement {
     updateNodes() {
         this.nodes.forEach((node) => {
             node.update(mouse, ctx);
-            node.draw(ctx);
         });
         if (this.nodes[0].powered) {
             this.nodes[1].powered = false;

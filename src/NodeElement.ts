@@ -3,7 +3,7 @@ class NodeElement {
     y: number;
     w: number;
     h: number;
-    logic: Logic;
+    name: string;
     focused: boolean = false;
     dragging: boolean = false;
     setRel: boolean = false;
@@ -18,20 +18,65 @@ class NodeElement {
     private static readonly HIGHLIGHT_COLOR = "yellow";
     private static cachedGrid: { x: number; y: number }[] | null = null;
 
+    truthTable: TruthTable[] | null = null;
+    private custom: boolean = false;
+
     constructor(
         parent: Board,
+        name: string,
         x: number,
         y: number,
         w: number,
         h: number,
-        logic: Logic
+        truthTable?: TruthTable[] | null
     ) {
         this.parent = parent;
+        this.name = name;
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        this.logic = logic;
+        this.truthTable = truthTable || null;
+        if (this.truthTable) {
+            this.custom = true;
+
+            this.nodes = [];
+            // Create nodes based on the truth table
+            const numInputs = this.truthTable[0].inputs.length;
+            const numOutputs = this.truthTable[0].outputs.length;
+            console.log(
+                `Truth table inputs: ${numInputs}, outputs: ${numOutputs}`
+            );
+
+            // Create input nodes
+            let inputs: LogicNode[] = [];
+            for (let i = 0; i < numInputs; i++) {
+                inputs.push(new LogicNode(this, 0, this.h / 2, 7, false));
+            }
+            // Create output nodes
+            let outputs: LogicNode[] = [];
+            for (let i = 0; i < numOutputs; i++) {
+                outputs.push(new LogicNode(this, this.w, this.h / 2, 7, false));
+            }
+
+            // Add input and output nodes to the nodes array
+            this.nodes = [...inputs, ...outputs];
+
+            // Space out input nodes vertically
+            for (let i = 0; i < numInputs; i++) {
+                this.nodes[i].oY = (this.h / (numInputs + 1)) * (i + 1);
+            }
+
+            // Space out output nodes vertically
+            for (let i = 0; i < numOutputs; i++) {
+                this.nodes[numInputs + i].oY =
+                    (this.h / (numOutputs + 1)) * (i + 1);
+            }
+
+            // Save custom element to localStorage
+        } else {
+            this.custom = false;
+        }
     }
 
     getMouseOver(mouse: { x: number; y: number }): boolean {
@@ -45,29 +90,59 @@ class NodeElement {
 
     updateNodes(): void {
         // If the logic has inputs and outputs, apply the logic
-        // if (this.logic.inputs > 0 && this.logic.outputs > 0) {
-        //     const inputStates = this.nodes
-        //         .slice(0, this.logic.inputs)
-        //         .map((node) => node.powered);
-
-        //     // Apply the logic function
-        //     const outputStates = this.logic.logic(inputStates);
-
-        //     // Update the output nodes based on the logic result
-        //     this.nodes
-        //         .slice(this.logic.inputs, this.logic.inputs + this.logic.outputs)
-        //         .forEach((node, index) => {
-        //             node.powered = Array.isArray(outputStates)
-        //                 ? outputStates[index]
-        //                 : outputStates;
-        //         });
-        // }
-    }
-
-    drawNodes(ctx: CanvasRenderingContext2D): void {
         this.nodes.forEach((node) => {
-            node.draw(ctx);
+            // node.x = this.x + node.oX;
+            // node.y = this.y + node.oY;
+            node.update(mouse, ctx);
         });
+
+        if (!this.custom) return;
+        if (!this.truthTable) return;
+
+        if (this.truthTable) {
+            // Update the truth table based on the current state of the nodes
+            const inputs = this.nodes.map((node) => (node.powered ? 1 : 0));
+            let truthTableFunction = createTruthTableFunction(this.truthTable);
+
+            const outputs = truthTableFunction(inputs);
+            // Update the nodes based on the outputs
+            if (!outputs) return;
+            for (let i = 0; i < outputs.length; i++) {
+                this.nodes[this.nodes.length - outputs.length + i].powered =
+                    outputs[i] === 1;
+            }
+        }
+
+        // for (let i = 0; i < this.nodes.length; i++) {
+        //     if (this.nodes[i].powered) {
+        //         (this.truthTable.elements[i] as Switch).powered = true;
+        //     } else {
+        //         (this.truthTable.elements[i] as Switch).powered = false;
+        //     }
+        // }
+
+        // let leds: LED[] = [];
+        // this.truthTable.elements.forEach((e) => {
+        //     if (e instanceof LED) {
+        //         leds.push(e);
+        //     }
+        // });
+
+        // for (let i = 0; i < leds.length; i++) {
+        //     this.nodes[this.nodes.length - leds.length + i].powered =
+        //         leds[i].nodes[0].powered;
+        // }
+        // for (let i = 0; i < this.truthTable.wires.length; i++) {
+        //     const wire = this.truthTable.wires[i];
+        //     // wire.draw(ctx);
+        //     wire.update(true);
+        // }
+
+        // this.truthTable.elements.forEach((e) => {
+        //     // e.draw(ctx);
+        //     // e.update(mouse, this.miniBoard!.elements);
+        //     e.updateNodes();
+        // });
     }
 
     drag(x: number, y: number): void {
@@ -83,13 +158,17 @@ class NodeElement {
         ctx.fillStyle = "#000";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(this.logic.name, this.x + this.w / 2, this.y + this.h / 2);
+        ctx.fillText(this.name, this.x + this.w / 2, this.y + this.h / 2);
         ctx.textAlign = "left";
         if (this.focused) {
             ctx.strokeStyle = "#fff";
             ctx.lineWidth = 3;
             ctx.strokeRect(this.x, this.y, this.w, this.h);
         }
+
+        this.nodes.forEach((node) => {
+            node.draw(ctx);
+        });
     }
 
     remove(): void {
@@ -103,10 +182,8 @@ class NodeElement {
         });
         wires.forEach((wire) => {
             wire.startNode.hasWire = false;
-			wire.endNode.hasWire = false;
-			this.parent.wires = this.parent.wires.filter(
-				(w) => w !== wire
-			);
+            wire.endNode.hasWire = false;
+            this.parent.wires = this.parent.wires.filter((w) => w !== wire);
         });
         this.nodes.forEach((node) => {
             // Remove any wires connected to this node
@@ -151,6 +228,7 @@ class NodeElement {
             if (this.focused && this.draggable) {
                 this.drag(mouse.x, mouse.y);
                 this.dragging = true;
+                mouse.dragging = true;
             }
         }
 
@@ -167,6 +245,7 @@ class NodeElement {
             });
             this.setRel = false;
             this.dragging = false;
+            mouse.dragging = false;
             this.relativeX = 0;
             this.relativeY = 0;
             this.draggable = true;
@@ -175,5 +254,26 @@ class NodeElement {
         }
 
         this.updateNodes();
+    }
+
+    static loadFromLocalStorage(parent: Board): NodeElement[] {
+        const customElements = JSON.parse(
+            localStorage.getItem("savedTruthTables") || "[]"
+        );
+        return customElements.map(
+            (data: { name: string; truthTable: TruthTable[] }) => {
+                const nodeElement = new NodeElement(
+                    parent,
+                    data.name,
+                    0,
+                    0,
+                    100,
+                    100,
+                    data.truthTable
+                );
+                nodeElement.custom = true;
+                return nodeElement;
+            }
+        );
     }
 }

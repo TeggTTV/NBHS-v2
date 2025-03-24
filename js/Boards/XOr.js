@@ -1,7 +1,7 @@
 "use strict";
 class XOr extends NodeElement {
-    constructor(parent, x, y, w, h, logic) {
-        super(parent, x, y, w, h, logic);
+    constructor(parent, name, x, y, w, h) {
+        super(parent, name, x, y, w, h);
         this.focused = false;
         this.dragging = false;
         this.setRel = false;
@@ -19,7 +19,6 @@ class XOr extends NodeElement {
     updateNodes() {
         this.nodes.forEach((node) => {
             node.update(mouse, ctx);
-            node.draw(ctx);
         });
         // Update the logic of the XOR gate based on the input nodes
         const input1 = this.nodes[0].powered;

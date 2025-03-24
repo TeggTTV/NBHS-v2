@@ -32,10 +32,23 @@ class LogicNode {
             }
     }
     update(mouse, ctx) {
+        if (this.parent instanceof Switch) {
+            if (this.parent.powered) {
+                this.powered = true;
+            }
+            else {
+                this.powered = false;
+            }
+        }
+        if (!this.hasWire && this.x == this.parent.x) {
+            this.powered = false;
+        }
+        if (this.parent.parent.type === 1)
+            return;
         this.x = this.parent.x + this.oX;
         this.y = this.parent.y + this.oY;
         if (mouseOver(this.x - this.r, this.y - this.r, this.r * 2, this.r * 2, mouse.x, mouse.y)) {
-            if (mouse.down) {
+            if (mouse.down && !mouse.dragging) {
                 if (mouse.creatingWire && mouse.creatingWireNode != this) {
                     for (let n of this.parent.nodes) {
                         if (mouse.creatingWireNode == n) {
@@ -43,7 +56,9 @@ class LogicNode {
                         }
                     }
                     // create a wire
-                    this.parent.parent.createWire(mouse.creatingWireNode, this);
+                    if (mouse.creatingWireNode) {
+                        this.parent.parent.createWire(mouse.creatingWireNode, this);
+                    }
                     mouse.creatingWire = false;
                     mouse.creatingWireNode = null;
                     mouse.down = false;
@@ -61,23 +76,12 @@ class LogicNode {
                 }
             }
         }
-        if (this.parent instanceof Switch) {
-            if (this.parent.powered) {
-                this.powered = true;
-            }
-            else {
-                this.powered = false;
-            }
-        }
-        if (!this.hasWire && this.x == this.parent.x) {
-            this.powered = false;
-        }
     }
     draw(ctx) {
         if (this.parent) {
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.strokeStyle = 'lightgray';
+            ctx.strokeStyle = this.getFillColor();
             ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.fillStyle = this.getFillColor();
@@ -117,16 +121,16 @@ class LogicNode {
     // }
     getFillColor() {
         if (mouse.creatingWire && mouse.creatingWireNode == this) {
-            return 'yellow';
+            return "yellow";
         }
         if (this.powered)
-            return 'green';
+            return "green";
         if (this.parent instanceof Switch) {
             if (this.parent.powered) {
-                return 'green';
+                return "green";
             }
         }
-        return 'red';
+        return "red";
     }
     mouseOver(x, y) {
         return (x > this.x - this.r &&
