@@ -213,7 +213,7 @@ function createTruthTableFunction(truthTable: TruthTable[]) {
 function saveV2(name: string) {
     const inputs = board.elements.filter((e) => e instanceof Switch);
     const outputs = board.elements.filter((e) => e instanceof LED);
-    if(inputs.length === 0 || outputs.length === 0) {
+    if (inputs.length === 0 || outputs.length === 0) {
         console.error("No inputs or outputs found.");
         return;
     }
@@ -250,7 +250,7 @@ function saveV2(name: string) {
                 testConfiguration(i, () => runTests(i + 1));
             } else {
                 console.table(truthTable);
-                resolve(truthTable); // Return the truth table
+                resolve(truthTable);
             }
         }
 

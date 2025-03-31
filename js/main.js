@@ -70,8 +70,6 @@ function update() {
     // Version #
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
-    ctx.fillText("Version 0.0.1", 10, 20);
-    // ele.draw(ctx);
-    // ele.update(mouse, [], ctx, 50, canvas, []);
+    ctx.fillText("Version 0.1.3", 10, 20);
     board.update();
 }

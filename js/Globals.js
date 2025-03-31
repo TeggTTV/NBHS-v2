@@ -190,7 +190,7 @@ function saveV2(name) {
             }
             else {
                 console.table(truthTable);
-                resolve(truthTable); // Return the truth table
+                resolve(truthTable);
             }
         }
         runTests();
